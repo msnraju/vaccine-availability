@@ -36,10 +36,13 @@ function fetchAppointments(section, date, showMessage) {
 }
 
 function renderCentersHtml(name, data, showMessage) {
-  var html = "";
-  if (data.centers.length > 0) {
+  var mute = $("#mute").is(":checked");
+
+  if (data.centers.length > 0 && !mute) {
     document.getElementById("audio-notification").play();
   }
+
+  var html = "";
 
   data.centers.forEach((center) => {
     html += "<div class='center'>";
@@ -147,5 +150,3 @@ $(() => {
   $("#vaccine").on("change", getAvailability);
   $("#minQty").on("change", getAvailability);
 });
-
-

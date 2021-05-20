@@ -60,7 +60,7 @@ function renderCentersHtml(name, data, showMessage) {
 
     center.sessions.forEach((session) => {
       html +=
-        "<a target='_blank' class='session' href='https://selfregistration.cowin.gov.in/appointment'>";
+        "<a target='_blank' class='session' href='https://selfregistration.cowin.gov.in'>";
       html += "<div class='vaccine'>" + session.vaccine + "</div>";
       html += "<div class='date'>" + session.date + "</div>";
       html +=

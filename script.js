@@ -1,37 +1,41 @@
 function getAvailability() {
-  if (document.getElementById("pinCode").value == "") {
-    return;
+  try {
+    if (document.getElementById("pinCode").value == "") {
+      return;
+    }
+
+    if (document.getElementById("date").value == "") {
+      document.getElementById("date").value = moment().format("YYYY-MM-DD");
+    }
+
+    var dateText = document.getElementById("date").value;
+    fetchAppointments(
+      "first3days",
+      moment(dateText).format("DD-MM-YYYY"),
+      true
+    );
+    fetchAppointments(
+      "next3days",
+      moment(dateText).add("days", 3).format("DD-MM-YYYY"),
+      false
+    );
+  } catch (err) {
+    console.log(err);
   }
-
-  if (document.getElementById("date").value == "") {
-    document.getElementById("date").value = moment().format("YYYY-MM-DD");
-  }
-
-  var dateText = document.getElementById("date").value;
-  dateText = moment(dateText).format("DD-MM-YYYY");
-
-  var url =
-    "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=201301&date=" +
-    dateText;
-
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => applyFilters(data))
-    .then((data) => renderData("data", data));
-
-    dateText = moment(dateText).add('days', 3).format("DD-MM-YYYY");
-    var url =
-    "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=201301&date=" +
-    dateText;
-
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => applyFilters(data))
-    .then((data) => renderData("data2", data));
 }
 
-function renderData(name, data) {
-  console.log(data);
+function fetchAppointments(section, date, showMessage) {
+  var url =
+    "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=201301&date=" +
+    date;
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => applyFilters(data))
+    .then((data) => renderCentersHtml(section, data, showMessage));
+}
+
+function renderCentersHtml(name, data, showMessage) {
   var html = "";
 
   data.centers.forEach((center) => {
@@ -76,7 +80,7 @@ function renderData(name, data) {
     html += "</div>";
   });
 
-  if (html == "") {
+  if (html == "" && showMessage) {
     html =
       "<h2 class='message'>Sorry, No slots available. Checked at: " +
       moment().format("hh:mm a") +
@@ -111,4 +115,12 @@ function applyFilters(data) {
   return { centers: centers };
 }
 
-setInterval(getAvailability, 5000);
+$(() => {
+  getAvailability();
+  setInterval(getAvailability, 5000);
+
+  $("#age45").on("change", getAvailability);
+  $("#age18").on("change", getAvailability);
+  $("#pinCode").on("change", getAvailability);
+  $("#date").on("change", getAvailability);
+});

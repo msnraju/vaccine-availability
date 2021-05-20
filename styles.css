@@ -50,3 +50,7 @@ body {
     font-size: 20pt;
     margin-top: calc((100vh / 2) - 20pt);
 }
+
+.availability {
+  margin-top: 150px;
+}

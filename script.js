@@ -57,7 +57,7 @@ function renderCentersHtml(name, data, showMessage) {
 
     center.sessions.forEach((session) => {
       html +=
-        "<a class='session' href='https://selfregistration.cowin.gov.in/appointment'>";
+        "<a target='_blank' class='session' href='https://selfregistration.cowin.gov.in/appointment'>";
       html += "<div class='vaccine'>" + session.vaccine + "</div>";
       html += "<div class='date'>" + session.date + "</div>";
       html +=
@@ -85,7 +85,7 @@ function renderCentersHtml(name, data, showMessage) {
 
   if (html == "" && showMessage) {
     html =
-      "<h2 class='message'>Sorry, No slots available. Checked at: " +
+      "<h2 class='message'>No slots available @ " +
       moment().format("hh:mm a") +
       "</h2>";
   }
@@ -96,13 +96,29 @@ function renderCentersHtml(name, data, showMessage) {
 function applyFilters(data) {
   var age45 = $("#age45").is(":checked");
   var age18 = $("#age18").is(":checked");
+  var dose1 = $("#dose1").is(":checked");
+  var dose2 = $("#dose2").is(":checked");
+  var vaccine = $("#vaccine").val() + "";
+  var minQty = Number($("#minQty").val());
 
   var centers = [];
   data.centers.forEach((center) => {
     var sessions = [];
     center.sessions.forEach((session) => {
+      var valid = true;
+      if (dose1 && session.available_capacity_dose1 < minQty) {
+        valid = false;
+      }
+      if (dose2 && session.available_capacity_dose2 < minQty) {
+        valid = false;
+      }
+
+      if (vaccine && session.vaccine.toLowerCase() != vaccine.toLowerCase()) {
+        valid = false;
+      }
+
       if (
-        session.available_capacity_dose1 > 0 &&
+        valid &&
         ((age18 && session.min_age_limit == 18) ||
           (age45 && session.min_age_limit == 45))
       ) {
@@ -126,4 +142,10 @@ $(() => {
   $("#age18").on("change", getAvailability);
   $("#pinCode").on("change", getAvailability);
   $("#date").on("change", getAvailability);
+  $("#dose1").on("change", getAvailability);
+  $("#dose2").on("change", getAvailability);
+  $("#vaccine").on("change", getAvailability);
+  $("#minQty").on("change", getAvailability);
 });
+
+

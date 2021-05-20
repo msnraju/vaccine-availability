@@ -37,6 +37,9 @@ function fetchAppointments(section, date, showMessage) {
 
 function renderCentersHtml(name, data, showMessage) {
   var html = "";
+  if (data.centers.length > 0) {
+    document.getElementById("audio-notification").play();
+  }
 
   data.centers.forEach((center) => {
     html += "<div class='center'>";
@@ -124,4 +127,3 @@ $(() => {
   $("#pinCode").on("change", getAvailability);
   $("#date").on("change", getAvailability);
 });
-

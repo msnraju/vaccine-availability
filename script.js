@@ -124,3 +124,4 @@ $(() => {
   $("#pinCode").on("change", getAvailability);
   $("#date").on("change", getAvailability);
 });
+
